@@ -20,6 +20,9 @@
 		BD644CBC19BA2F4A001EBF83 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BD644CAE19BA2F4A001EBF83 /* ViewController.m */; };
 		BD644CBE19BA2F4A001EBF83 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD644CB419BA2F4A001EBF83 /* Images.xcassets */; };
 		BD644CBF19BA2F4A001EBF83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BD644CB519BA2F4A001EBF83 /* main.m */; };
+		BD644CD119BA36D2001EBF83 /* BPAnimatedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = BD644CCC19BA36D2001EBF83 /* BPAnimatedObject.m */; };
+		BD644CD219BA36D2001EBF83 /* BPAnimatedPage.m in Sources */ = {isa = PBXBuildFile; fileRef = BD644CCE19BA36D2001EBF83 /* BPAnimatedPage.m */; };
+		BD644CD319BA36D2001EBF83 /* BPAnimatedScroll.m in Sources */ = {isa = PBXBuildFile; fileRef = BD644CD019BA36D2001EBF83 /* BPAnimatedScroll.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +47,12 @@
 		BD644CB319BA2F4A001EBF83 /* BPAnimatedScroll-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "BPAnimatedScroll-Prefix.pch"; sourceTree = "<group>"; };
 		BD644CB419BA2F4A001EBF83 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		BD644CB519BA2F4A001EBF83 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BD644CCB19BA36D2001EBF83 /* BPAnimatedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPAnimatedObject.h; sourceTree = "<group>"; };
+		BD644CCC19BA36D2001EBF83 /* BPAnimatedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPAnimatedObject.m; sourceTree = "<group>"; };
+		BD644CCD19BA36D2001EBF83 /* BPAnimatedPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPAnimatedPage.h; sourceTree = "<group>"; };
+		BD644CCE19BA36D2001EBF83 /* BPAnimatedPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPAnimatedPage.m; sourceTree = "<group>"; };
+		BD644CCF19BA36D2001EBF83 /* BPAnimatedScroll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPAnimatedScroll.h; sourceTree = "<group>"; };
+		BD644CD019BA36D2001EBF83 /* BPAnimatedScroll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPAnimatedScroll.m; sourceTree = "<group>"; };
 		E838FEFB2AC8432F90A9957E /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -195,6 +204,7 @@
 		BD644CB019BA2F4A001EBF83 /* External Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BD644CCA19BA36D2001EBF83 /* BPAnimatedScroll */,
 			);
 			path = "External Frameworks";
 			sourceTree = "<group>";
@@ -209,6 +219,19 @@
 			);
 			path = Resources;
 			sourceTree = "<group>";
+		};
+		BD644CCA19BA36D2001EBF83 /* BPAnimatedScroll */ = {
+			isa = PBXGroup;
+			children = (
+				BD644CCB19BA36D2001EBF83 /* BPAnimatedObject.h */,
+				BD644CCC19BA36D2001EBF83 /* BPAnimatedObject.m */,
+				BD644CCD19BA36D2001EBF83 /* BPAnimatedPage.h */,
+				BD644CCE19BA36D2001EBF83 /* BPAnimatedPage.m */,
+				BD644CCF19BA36D2001EBF83 /* BPAnimatedScroll.h */,
+				BD644CD019BA36D2001EBF83 /* BPAnimatedScroll.m */,
+			);
+			path = BPAnimatedScroll;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -338,9 +361,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				BD644CB619BA2F4A001EBF83 /* AppDelegate.m in Sources */,
+				BD644CD319BA36D2001EBF83 /* BPAnimatedScroll.m in Sources */,
 				BD644CB819BA2F4A001EBF83 /* iPadStoryboardIdentifiers.m in Sources */,
 				BD644CB919BA2F4A001EBF83 /* iPhoneStoryboardIdentifiers.m in Sources */,
+				BD644CD119BA36D2001EBF83 /* BPAnimatedObject.m in Sources */,
 				BD644CB719BA2F4A001EBF83 /* ImagesCatalog.m in Sources */,
+				BD644CD219BA36D2001EBF83 /* BPAnimatedPage.m in Sources */,
 				BD644CBF19BA2F4A001EBF83 /* main.m in Sources */,
 				BD644CBC19BA2F4A001EBF83 /* ViewController.m in Sources */,
 			);

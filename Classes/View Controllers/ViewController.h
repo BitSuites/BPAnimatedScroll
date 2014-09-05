@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BPAnimatedScroll.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController {
+    IBOutlet BPAnimatedScroll *tutorialScroll;
+    IBOutlet UIPageControl *welcomePageControl;
+}
+
+- (IBAction)pageChanged:(id)sender;
 
 @end
