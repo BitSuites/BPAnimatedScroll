@@ -1,0 +1,5 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers" "${PODS_ROOT}/Headers/KGNoise" "${PODS_ROOT}/Headers/OpenInChrome" "${PODS_ROOT}/Headers/Platform" "${PODS_ROOT}/Headers/UIAlertView-Blocks"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers" -isystem "${PODS_ROOT}/Headers/KGNoise" -isystem "${PODS_ROOT}/Headers/OpenInChrome" -isystem "${PODS_ROOT}/Headers/Platform" -isystem "${PODS_ROOT}/Headers/UIAlertView-Blocks"
+OTHER_LDFLAGS = -ObjC -framework Accelerate -framework CoreLocation -framework MapKit -framework QuartzCore
+PODS_ROOT = ${SRCROOT}/Pods
