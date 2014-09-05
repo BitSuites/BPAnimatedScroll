@@ -14,7 +14,6 @@
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
 
-    #import "Platform.h"
     #import "ImagesCatalog.h"
     #import "iPadStoryboardIdentifiers.h"
     #import "iPhoneStoryboardIdentifiers.h"

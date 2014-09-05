@@ -8,6 +8,7 @@
 
 #import "BPAnimatedScroll.h"
 #import "BPAnimatedPage.h"
+#import "Platform.h"
 
 @interface BPAnimatedScroll ()<UIScrollViewDelegate>{
     UIScrollView *animatedScrollView;

@@ -7,6 +7,7 @@
 //
 
 #import "BPAnimatedObject.h"
+#import "Platform.h"
 
 @interface BPAnimatedObject (){
     BOOL startSet;
