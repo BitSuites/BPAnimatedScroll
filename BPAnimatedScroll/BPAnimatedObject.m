@@ -165,7 +165,7 @@
     if ([[constraints allKeys] containsObject:@(BPLayoutConstraintHeight)]){
         float heightValue = [[constraints objectForKey:@(BPLayoutConstraintHeight)] floatValue];
         if (heightValue < 0){
-            frame.size.height = (superviewFrame.size.width + heightValue);
+            frame.size.height = (superviewFrame.size.height + heightValue);
         } else{
             frame.size.height = heightValue;
         }

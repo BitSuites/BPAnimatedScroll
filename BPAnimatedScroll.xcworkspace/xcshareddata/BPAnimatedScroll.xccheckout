@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>63C07E61-DB3A-467E-A356-1735717D9A3A</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BPAnimatedScroll</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>395885D3E424DD5F6B4E2629AFD40EA0E4A9AF87</key>
+		<string>github.com:BitSuites/BPAnimatedScroll.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BPAnimatedScroll.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>395885D3E424DD5F6B4E2629AFD40EA0E4A9AF87</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:BitSuites/BPAnimatedScroll.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>395885D3E424DD5F6B4E2629AFD40EA0E4A9AF87</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>395885D3E424DD5F6B4E2629AFD40EA0E4A9AF87</string>
+			<key>IDESourceControlWCCName</key>
+			<string>BPAnimatedScroll</string>
+		</dict>
+	</array>
+</dict>
+</plist>
