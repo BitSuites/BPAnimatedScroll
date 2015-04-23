@@ -19,10 +19,20 @@ typedef enum {
     BPLayoutConstraintLeftToTrailing, // Left of Object to Right of Scroll View (View will be off screen) (CGFLoat)
     BPLayoutConstraintRightToTrailing, // Right of Object to Right of Scroll View (CGFLoat)
     BPLayoutConstraintRightToLeading, // Right of Object to Left of Scroll View (View will be off screen) (CGFLoat)
-    BPLayoutConstraintCenterVertical, // Centers Object vertically in scroll view (YES)
-    BPLayoutConstraintCenterHorizontal, // Centers Object horizonally in scroll view (YES)
-    BPLayoutConstraintKeepRatio // Keeps the ratio of the original frame (YES)
+    BPLayoutConstraintCenterVertical, // Centers Object vertically in scroll view (CGFLoat)
+    BPLayoutConstraintCenterHorizontal, // Centers Object horizonally in scroll view (CGFLoat)
+    BPLayoutConstraintKeepRatio, // Keeps the ratio of the original frame (YES)
+    BPLayoutConstraintSizeFitHeight, // Used for UILabel to keep everything anchroed (YES)
+    BPLayoutConstraintRelatedToObjects, // Array of all the constratints and objects
+    BPLayoutConstraintConstraints, // NSDcitionary of all the constratints and object
+    BPLayoutConstraintObject // BPAnimatedObject that is part of the relation
 } BPLayoutConstraint;
+
+typedef enum {
+    BPAnimatedObjectPositionStart,
+    BPAnimatedObjectPositionCenter,
+    BPAnimatedObjectPositionEnd
+} BPAnimatedObjectPosition;
 
 @interface BPAnimatedObject : NSObject
 
@@ -30,6 +40,7 @@ typedef enum {
 @property (nonatomic) CGRect startPosition; // Off Screen Left
 @property (nonatomic) CGRect centerPosition; // Center Screen
 @property (nonatomic) CGRect endPosition; // Off Screen Right
+@property (nonatomic, strong) NSDictionary *sharedConstraints; // Shared Constraints
 @property (nonatomic, strong) NSDictionary *startConstraints; // Off Screen Left
 @property (nonatomic, strong) NSDictionary *centerConstraints; // Center Screen
 @property (nonatomic, strong) NSDictionary *endConstraints; // Off Screen Right
@@ -40,6 +51,7 @@ typedef enum {
 @property (nonatomic) CGRect landscapeStartPosition; // Off Screen Left
 @property (nonatomic) CGRect landscapeCenterPosition; // Center Screen
 @property (nonatomic) CGRect landscapeEndPosition; // Off Screen Right
+@property (nonatomic, strong) NSDictionary *landscapeSharedConstraints; // Shared Constraints
 @property (nonatomic, strong) NSDictionary *landscapeStartConstraints; // Off Screen Left
 @property (nonatomic, strong) NSDictionary *landscapeCenterConstraints; // Center Screen
 @property (nonatomic, strong) NSDictionary *landscapeEndConstraints; // Off Screen Right
@@ -54,5 +66,7 @@ typedef enum {
 - (void)addToSuperview:(UIView *)superview;
 - (void)removeFromSuperview;
 - (void)animateToPercent:(CGFloat)percent leftSide:(BOOL)leftSide;
+
+- (CGRect)frameForPosition:(BPAnimatedObjectPosition)position;
 
 @end
