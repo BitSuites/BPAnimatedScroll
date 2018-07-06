@@ -1,1 +1,0 @@
-PODS_PLATFORM_OTHER_LDFLAGS = -framework Accelerate -framework CoreLocation -framework MapKit -framework QuartzCore

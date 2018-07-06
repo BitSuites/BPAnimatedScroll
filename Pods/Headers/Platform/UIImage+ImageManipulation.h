@@ -1,1 +1,0 @@
-../../Platform/Additions/UIImage Extensions/UIImage+ImageManipulation.h

@@ -16,48 +16,48 @@
 @implementation BPAnimatedPage
 @synthesize objects;
 
-- (void)setObjects:(NSMutableArray *)newObjects{
+- (void)setObjects:(NSMutableArray *)newObjects {
     objects = newObjects;
 }
 
-- (void)addObject:(BPAnimatedObject *)object{
+- (void)addObject:(BPAnimatedObject *)object {
     if (!objects)
         objects = [[NSMutableArray alloc] init];
     [objects addObject:object];
 }
 
-- (void)addObject:(BPAnimatedObject *)object atIndex:(NSUInteger)index{
+- (void)addObject:(BPAnimatedObject *)object atIndex:(NSUInteger)index {
     if (!objects)
         objects = [[NSMutableArray alloc] init];
     [objects insertObject:object atIndex:index];
 }
 
-- (void)removeObject:(BPAnimatedObject *)object{
+- (void)removeObject:(BPAnimatedObject *)object {
     if (!objects)
         return;
     [objects removeObject:object];
 }
 
-- (void)removeObjectAtIndex:(NSUInteger)index{
+- (void)removeObjectAtIndex:(NSUInteger)index {
     if (!objects)
         return;
     [objects removeObjectAtIndex:index];
 }
 
-- (void)removeFromSuperview{
-    for (BPAnimatedObject *nextObject in objects){
+- (void)removeFromSuperview {
+    for (BPAnimatedObject *nextObject in objects) {
         [nextObject removeFromSuperview];
     }
 }
 
-- (void)addToSuperview:(UIView *)superview{
-    for (BPAnimatedObject *nextObject in objects){
+- (void)addToSuperview:(UIView *)superview {
+    for (BPAnimatedObject *nextObject in objects) {
         [nextObject addToSuperview:superview];
     }
 }
 
-- (void)animateToPercent:(CGFloat)percent leftSide:(BOOL)leftSide{
-    for (BPAnimatedObject *nextObject in objects){
+- (void)animateToPercent:(CGFloat)percent leftSide:(BOOL)leftSide {
+    for (BPAnimatedObject *nextObject in objects) {
         [nextObject animateToPercent:percent leftSide:leftSide];
     }
 }

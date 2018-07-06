@@ -14,7 +14,7 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad{
+- (void)viewDidLoad {
     [super viewDidLoad];
     [tutorialScroll setDelegate:self];
     [tutorialScroll setPages:[@[[self iPhonePage1], [self iPhonePage2], [self iPhonePage3]] mutableCopy]];
@@ -26,7 +26,7 @@
     [welcomePageControl setCurrentPage:[welcomePageControl currentPage]];
 }
 
-- (void)doneAction{
+- (void)doneAction {
 //    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -118,7 +118,7 @@
 
 #pragma mark - Helpers
 
-- (UILabel *)labelWithText:(NSString *)text{
+- (UILabel *)labelWithText:(NSString *)text {
     UILabel *label = [[UILabel alloc] init];
     [label setBackgroundColor:[UIColor clearColor]];
     [label setText:text];
@@ -129,7 +129,7 @@
     return label;
 }
 
-- (UIImageView *)imageViewWithImage:(UIImage *)image{
+- (UIImageView *)imageViewWithImage:(UIImage *)image {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     [imageView setContentMode:UIViewContentModeScaleAspectFit];
     [imageView setBackgroundColor:[UIColor redColor]];
@@ -138,7 +138,7 @@
 
 #pragma mark - BPAnimatedScrollDelegate
 
-- (void)bpAnimatedScroll:(UIView *)scroll selectedNewPage:(NSInteger)page numberOfPages:(NSInteger)numPages{
+- (void)bpAnimatedScroll:(UIView *)scroll selectedNewPage:(NSInteger)page numberOfPages:(NSInteger)numPages {
     [welcomePageControl setNumberOfPages:numPages];
     [welcomePageControl setCurrentPage:page];
 }

@@ -7,7 +7,6 @@
 //
 
 #import "BPAnimatedObject.h"
-#import "Platform.h"
 
 typedef enum {
     BPAnimatedObjectSetWidth,
@@ -17,7 +16,7 @@ typedef enum {
     BPAnimatedObjectSetFrame
 } BPAnimatedObjectSet;
 
-@interface BPAnimatedObject (){
+@interface BPAnimatedObject () {
     BOOL startSet;
     BOOL centerSet;
     BOOL endSet;
@@ -28,7 +27,7 @@ typedef enum {
 @implementation BPAnimatedObject
 @synthesize startPosition, centerPosition, endPosition, sharedConstraints, startConstraints, centerConstraints, endConstraints, startAlpha, centerAlpha, endAlpha, animatedObject, landscapeCenterAlpha, landscapeCenterConstraints, landscapeCenterPosition, landscapeEndAlpha, landscapeEndConstraints, landscapeEndPosition, landscapeStartAlpha, landscapeSharedConstraints, landscapeStartConstraints, landscapeStartPosition, zOrder, differentLandscapeConstraints;
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         zOrder = 10;
@@ -39,41 +38,41 @@ typedef enum {
 
 #pragma mark - Setters
 
-- (void)setAnimatedObject:(UIView *)newObject{
-    if (!startSet){
+- (void)setAnimatedObject:(UIView *)newObject {
+    if (!startSet) {
         startPosition = newObject.frame;
         landscapeStartPosition = newObject.frame;
     }
-    if (!centerSet){
+    if (!centerSet) {
         centerPosition = newObject.frame;
         landscapeCenterPosition = newObject.frame;
     }
-    if (!endSet){
+    if (!endSet) {
         endPosition = newObject.frame;
         landscapeEndPosition = newObject.frame;
     }
     animatedObject = newObject;
 }
 
-- (void)setStartPosition:(CGRect)position{
+- (void)setStartPosition:(CGRect)position {
     startPosition = position;
     startSet = YES;
 }
 
-- (void)setCenterPosition:(CGRect)position{
+- (void)setCenterPosition:(CGRect)position {
     centerPosition = position;
     centerSet = YES;
 }
 
-- (void)setEndPosition:(CGRect)position{
+- (void)setEndPosition:(CGRect)position {
     endPosition = position;
     endSet = YES;
 }
 
 #pragma mark - Custom
 
-- (void)addToSuperview:(UIView *)superview{
-    if (animatedObject && animatedObject.superview != superview){
+- (void)addToSuperview:(UIView *)superview {
+    if (animatedObject && animatedObject.superview != superview) {
         [animatedObject setFrame:[self startFrame]];
         [animatedObject setAlpha:([self isLandscape] ? landscapeStartAlpha : landscapeEndAlpha)];
         [animatedObject setHidden:YES];
@@ -82,16 +81,16 @@ typedef enum {
     }
 }
 
-- (void)removeFromSuperview{
-    if (animatedObject){
+- (void)removeFromSuperview {
+    if (animatedObject) {
         [animatedObject removeFromSuperview];
     }
 }
 
-- (void)animateToPercent:(CGFloat)percent leftSide:(BOOL)leftSide{
+- (void)animateToPercent:(CGFloat)percent leftSide:(BOOL)leftSide {
     if (!animatedObject)
         return;
-    if (percent <= 0){
+    if (percent <= 0) {
         [animatedObject setHidden:YES];
         return;
     } else {
@@ -116,64 +115,75 @@ typedef enum {
     [animatedObject setFrame:CGRectMake(startRect.origin.x - xOriginDiff, startRect.origin.y - yOriginDiff, startRect.size.width - widthDiff, startRect.size.height - heightDiff)];
 }
 
-- (BOOL)isLandscape{
-    UIViewController *foundController = [animatedObject firstAvailableUIViewController];
-    if (differentLandscapeConstraints && foundController && UIInterfaceOrientationIsLandscape([foundController interfaceOrientation])){
+- (BOOL)isLandscape {
+    UIViewController *foundController = [self firstAvailableUIViewController:animatedObject];
+    if (differentLandscapeConstraints && foundController && UIInterfaceOrientationIsLandscape([foundController interfaceOrientation])) {
         return YES;
     } else {
         return NO;
     }
 }
 
-- (CGRect)frameForPosition:(BPAnimatedObjectPosition)position{
-    if (position == BPAnimatedObjectPositionStart){
+- (UIViewController *)firstAvailableUIViewController:(UIView *)view {
+    id nextResponder = [view nextResponder];
+    if ([nextResponder isKindOfClass:[UIViewController class]]) {
+        return nextResponder;
+    } else if ([nextResponder isKindOfClass:[UIView class]]) {
+        return [self firstAvailableUIViewController:nextResponder];
+    } else {
+        return nil;
+    }
+}
+
+- (CGRect)frameForPosition:(BPAnimatedObjectPosition)position {
+    if (position == BPAnimatedObjectPositionStart) {
         return [self startFrame];
-    } else if (position == BPAnimatedObjectPositionCenter){
+    } else if (position == BPAnimatedObjectPositionCenter) {
         return [self centerFrame];
-    } else if (position == BPAnimatedObjectPositionEnd){
+    } else if (position == BPAnimatedObjectPositionEnd) {
         return [self endFrame];
     } else {
         return animatedObject.frame;
     }
 }
 
-- (CGRect)startFrame{
-    if ([self isLandscape]){
+- (CGRect)startFrame {
+    if ([self isLandscape]) {
         return [self frameFromConstraints:landscapeStartConstraints withFallbackFrame:landscapeStartPosition position:BPAnimatedObjectPositionStart];
     } else {
         return [self frameFromConstraints:startConstraints withFallbackFrame:startPosition position:BPAnimatedObjectPositionStart];
     }
 }
 
-- (CGRect)centerFrame{
-    if ([self isLandscape]){
+- (CGRect)centerFrame {
+    if ([self isLandscape]) {
         return [self frameFromConstraints:landscapeCenterConstraints withFallbackFrame:landscapeCenterPosition position:BPAnimatedObjectPositionCenter];
     } else {
         return [self frameFromConstraints:centerConstraints withFallbackFrame:centerPosition position:BPAnimatedObjectPositionCenter];
     }
 }
 
-- (CGRect)endFrame{
-    if ([self isLandscape]){
+- (CGRect)endFrame {
+    if ([self isLandscape]) {
         return [self frameFromConstraints:landscapeEndConstraints withFallbackFrame:landscapeEndPosition position:BPAnimatedObjectPositionEnd];
     } else {
         return [self frameFromConstraints:endConstraints withFallbackFrame:endPosition position:BPAnimatedObjectPositionEnd];
     }
 }
 
-- (CGRect)frameFromConstraints:(NSDictionary *)constraints withFallbackFrame:(CGRect)frame position:(BPAnimatedObjectPosition)position{
+- (CGRect)frameFromConstraints:(NSDictionary *)constraints withFallbackFrame:(CGRect)frame position:(BPAnimatedObjectPosition)position {
     NSMutableDictionary *allConstraints;
-    if (constraints){
+    if (constraints) {
         allConstraints = [constraints mutableCopy];
     } else {
         allConstraints = [[NSMutableDictionary alloc] init];
     }
-    if ([self isLandscape]){
-        if (landscapeSharedConstraints){
+    if ([self isLandscape]) {
+        if (landscapeSharedConstraints) {
             [allConstraints addEntriesFromDictionary:landscapeSharedConstraints];
         }
     } else {
-        if (sharedConstraints){
+        if (sharedConstraints) {
             [allConstraints addEntriesFromDictionary:sharedConstraints];
         }
     }
@@ -181,56 +191,56 @@ typedef enum {
     if ([[allConstraints allKeys] count] <= 0)
         return frame;
     CGRect superviewFrame = CGRectMake(0, 0, 0, 0);
-    if (animatedObject.superview){
+    if (animatedObject.superview) {
         superviewFrame = animatedObject.superview.frame;
     }
     BOOL widthSet = NO;
     BOOL heightSet = NO;
     BOOL xOriginSet = NO;
     BOOL yOriginSet = NO;
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRelatedToObjects)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRelatedToObjects)]) {
         NSArray *relationships = [allConstraints objectForKey:@(BPLayoutConstraintRelatedToObjects)];
-        for (NSDictionary *nextRelationship in relationships){
+        for (NSDictionary *nextRelationship in relationships) {
             BPAnimatedObject *object = [nextRelationship objectForKey:@(BPLayoutConstraintObject)];
             NSDictionary *currentSetItems = @{@(BPAnimatedObjectSetHeight) : @(heightSet), @(BPAnimatedObjectSetWidth) : @(widthSet), @(BPAnimatedObjectSetX) : @(xOriginSet), @(BPAnimatedObjectSetY) : @(yOriginSet)};
             NSDictionary *result = [self relatedFrameFromConstraints:[nextRelationship objectForKey:@(BPLayoutConstraintConstraints)] currentFrame:frame withObjectFrame:[object frameForPosition:position] setValues:currentSetItems];
-            if (result != nil){
+            if (result != nil) {
                 frame = [[result objectForKey:@(BPAnimatedObjectSetFrame)] CGRectValue];
-                if ([[result objectForKey:@(BPAnimatedObjectSetHeight)] boolValue]){
+                if ([[result objectForKey:@(BPAnimatedObjectSetHeight)] boolValue]) {
                     heightSet = YES;
                 }
-                if ([[result objectForKey:@(BPAnimatedObjectSetWidth)] boolValue]){
+                if ([[result objectForKey:@(BPAnimatedObjectSetWidth)] boolValue]) {
                     widthSet = YES;
                 }
-                if ([[result objectForKey:@(BPAnimatedObjectSetX)] boolValue]){
+                if ([[result objectForKey:@(BPAnimatedObjectSetX)] boolValue]) {
                     xOriginSet = YES;
                 }
-                if ([[result objectForKey:@(BPAnimatedObjectSetY)] boolValue]){
+                if ([[result objectForKey:@(BPAnimatedObjectSetY)] boolValue]) {
                     yOriginSet = YES;
                 }
             }
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintWidth)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintWidth)]) {
         float widthValue = [[allConstraints objectForKey:@(BPLayoutConstraintWidth)] floatValue];
-        if (widthValue < 0){
+        if (widthValue < 0) {
             frame.size.width = (superviewFrame.size.width + widthValue);
         } else {
             frame.size.width = widthValue;
         }
         widthSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintHeight)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintHeight)]) {
         float heightValue = [[allConstraints objectForKey:@(BPLayoutConstraintHeight)] floatValue];
-        if (heightValue < 0){
+        if (heightValue < 0) {
             frame.size.height = (superviewFrame.size.height + heightValue);
-        } else{
+        } else {
             frame.size.height = heightValue;
         }
         heightSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintSizeFitHeight)]){
-        if ([animatedObject isKindOfClass:[UILabel class]]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintSizeFitHeight)]) {
+        if ([animatedObject isKindOfClass:[UILabel class]]) {
             CGFloat newHeight = [((UILabel *)animatedObject) sizeThatFits:CGSizeMake(frame.size.width, CGFLOAT_MAX)].height;
             if (!heightSet || newHeight < frame.size.height) {
                 frame.size.height = newHeight;
@@ -238,113 +248,113 @@ typedef enum {
             }
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToTopLayout)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToTopLayout)]) {
         frame.origin.y = [[allConstraints objectForKey:@(BPLayoutConstraintTopToTopLayout)] floatValue];
         yOriginSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToBottomLayout)]){
-        if (!yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToBottomLayout)]) {
+        if (!yOriginSet) {
             frame.origin.y = (superviewFrame.size.height + [[allConstraints objectForKey:@(BPLayoutConstraintTopToBottomLayout)] floatValue]);
             yOriginSet = YES;
-        } else if (superviewFrame.size.height > 0){
+        } else if (superviewFrame.size.height > 0) {
             NSLog(@"Breaking BPLayoutConstraintTopToBottomLayout");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToBottomLayout)]){
-        if (!heightSet && yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToBottomLayout)]) {
+        if (!heightSet && yOriginSet) {
             CGFloat height = (superviewFrame.size.height - frame.origin.y - [[allConstraints objectForKey:@(BPLayoutConstraintBottomToBottomLayout)] floatValue]);
-            if (height > 0.0){
+            if (height > 0.0) {
                 frame.size.height = height;
                 heightSet = YES;
-            } else if (superviewFrame.size.height > 0){
+            } else if (superviewFrame.size.height > 0) {
                 NSLog(@"Breaking BPLayoutConstraintBottomToBottomLayout");
             }
-        } else if (!yOriginSet){
+        } else if (!yOriginSet) {
             frame.origin.y = (superviewFrame.size.height - frame.size.height - [[allConstraints objectForKey:@(BPLayoutConstraintBottomToBottomLayout)] floatValue]);
             yOriginSet = YES;
-        } else if (superviewFrame.size.height > 0){
+        } else if (superviewFrame.size.height > 0) {
             NSLog(@"Breaking BPLayoutConstraintBottomToBottomLayout");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToTopLayout)]){
-        if (!heightSet && yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToTopLayout)]) {
+        if (!heightSet && yOriginSet) {
             CGFloat height = ((-[[allConstraints objectForKey:@(BPLayoutConstraintBottomToTopLayout)] floatValue]) - frame.origin.y);
-            if (height > 0.0){
+            if (height > 0.0) {
                 frame.size.height = height;
                 heightSet = YES;
             } else {
                 NSLog(@"Breaking BPLayoutConstraintBottomToTopLayout");
             }
-        } else if (!yOriginSet){
+        } else if (!yOriginSet) {
             frame.origin.y = (-([[allConstraints objectForKey:@(BPLayoutConstraintBottomToTopLayout)] floatValue] + frame.size.height));
             yOriginSet = YES;
         } else {
             NSLog(@"Breaking BPLayoutConstraintBottomToTopLayout");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToLeading)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToLeading)]) {
         frame.origin.x = [[allConstraints objectForKey:@(BPLayoutConstraintLeftToLeading)] floatValue];
         xOriginSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToTrailing)]){
-        if (!xOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToTrailing)]) {
+        if (!xOriginSet) {
             frame.origin.x = (superviewFrame.size.width + [[allConstraints objectForKey:@(BPLayoutConstraintLeftToTrailing)] floatValue]);
             xOriginSet = YES;
-        } else if (superviewFrame.size.width > 0){
+        } else if (superviewFrame.size.width > 0) {
             NSLog(@"Breaking BPLayoutConstraintLeftToTrailing");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToTrailing)]){
-        if (!widthSet && xOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToTrailing)]) {
+        if (!widthSet && xOriginSet) {
             CGFloat width = (superviewFrame.size.width - frame.origin.x - [[allConstraints objectForKey:@(BPLayoutConstraintRightToTrailing)] floatValue]);
-            if (width > 0.0){
+            if (width > 0.0) {
                 frame.size.width = width;
                 widthSet = YES;
-            } else if (superviewFrame.size.width > 0){
+            } else if (superviewFrame.size.width > 0) {
                 NSLog(@"Breaking BPLayoutConstraintRightToTrailing");
             }
-        } else if (!xOriginSet){
+        } else if (!xOriginSet) {
             frame.origin.x = (superviewFrame.size.width - frame.size.width - [[allConstraints objectForKey:@(BPLayoutConstraintRightToTrailing)] floatValue]);
             xOriginSet = YES;
-        } else if (superviewFrame.size.width > 0){
+        } else if (superviewFrame.size.width > 0) {
             NSLog(@"Breaking BPLayoutConstraintRightToTrailing");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToLeading)]){
-        if (!widthSet && xOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToLeading)]) {
+        if (!widthSet && xOriginSet) {
             CGFloat width = ((-[[allConstraints objectForKey:@(BPLayoutConstraintRightToLeading)] floatValue]) - frame.origin.x);
-            if (width > 0.0){
+            if (width > 0.0) {
                 frame.size.width = width;
                 widthSet = YES;
             } else {
                 NSLog(@"Breaking BPLayoutConstraintRightToLeading");
             }
-        } else if (!xOriginSet){
+        } else if (!xOriginSet) {
             frame.origin.x = (-([[allConstraints objectForKey:@(BPLayoutConstraintRightToLeading)] floatValue] + frame.size.width));
             xOriginSet = YES;
         } else {
             NSLog(@"Breaking BPLayoutConstraintRightToLeading");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterVertical)]){
-        if (!yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterVertical)]) {
+        if (!yOriginSet) {
             frame.origin.y = (superviewFrame.size.height / 2) - (frame.size.height / 2) + [[allConstraints objectForKey:@(BPLayoutConstraintCenterVertical)] floatValue];
             yOriginSet = YES;
-        } else if (superviewFrame.size.height > 0){
+        } else if (superviewFrame.size.height > 0) {
             NSLog(@"Breaking BPLayoutConstraintCenterVertical");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterHorizontal)]){
-        if (!xOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterHorizontal)]) {
+        if (!xOriginSet) {
             frame.origin.x = (superviewFrame.size.width / 2) - (frame.size.width / 2) + [[allConstraints objectForKey:@(BPLayoutConstraintCenterHorizontal)] floatValue];
             xOriginSet = YES;
-        } else if (superviewFrame.size.width > 0){
+        } else if (superviewFrame.size.width > 0) {
             NSLog(@"Breaking BPLayoutConstraintCenterHorizontal");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintKeepRatio)]){
-		if (!heightSet || !widthSet){
-			if (heightSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintKeepRatio)]) {
+		if (!heightSet || !widthSet) {
+			if (heightSet) {
 				CGFloat newWidth = (fallbackFrame.size.width * frame.size.height) / fallbackFrame.size.height;
 				if (newWidth > 0)
 					frame.size.width = newWidth;
@@ -358,9 +368,9 @@ typedef enum {
     return frame;
 }
 
-- (NSDictionary *)relatedFrameFromConstraints:(NSDictionary *)constraints currentFrame:(CGRect)frame withObjectFrame:(CGRect)objectFrame setValues:(NSDictionary *)setValues{
+- (NSDictionary *)relatedFrameFromConstraints:(NSDictionary *)constraints currentFrame:(CGRect)frame withObjectFrame:(CGRect)objectFrame setValues:(NSDictionary *)setValues {
     NSMutableDictionary *allConstraints;
-    if (constraints){
+    if (constraints) {
         allConstraints = [constraints mutableCopy];
     } else {
         allConstraints = [[NSMutableDictionary alloc] init];
@@ -371,118 +381,118 @@ typedef enum {
     BOOL heightSet = [[setValues objectForKey:@(BPAnimatedObjectSetHeight)] boolValue];
     BOOL xOriginSet = [[setValues objectForKey:@(BPAnimatedObjectSetX)] boolValue];
     BOOL yOriginSet = [[setValues objectForKey:@(BPAnimatedObjectSetY)] boolValue];
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintWidth)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintWidth)]) {
         frame.size.width = objectFrame.size.width + [[allConstraints objectForKey:@(BPLayoutConstraintWidth)] floatValue];;
         widthSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintHeight)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintHeight)]) {
         frame.size.height = objectFrame.size.height + [[allConstraints objectForKey:@(BPLayoutConstraintHeight)] floatValue];;
         heightSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToTopLayout)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToTopLayout)]) {
         frame.origin.y = objectFrame.origin.y + [[allConstraints objectForKey:@(BPLayoutConstraintTopToTopLayout)] floatValue];
         yOriginSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToBottomLayout)]){
-        if (!yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintTopToBottomLayout)]) {
+        if (!yOriginSet) {
             frame.origin.y = objectFrame.origin.y + objectFrame.size.height + [[allConstraints objectForKey:@(BPLayoutConstraintTopToBottomLayout)] floatValue];
             yOriginSet = YES;
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToBottomLayout)]){
-        if (!heightSet && yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToBottomLayout)]) {
+        if (!heightSet && yOriginSet) {
             CGFloat height = objectFrame.origin.y + objectFrame.size.height - frame.origin.y - [[allConstraints objectForKey:@(BPLayoutConstraintBottomToBottomLayout)] floatValue];
-            if (height > 0.0){
+            if (height > 0.0) {
                 frame.size.height = height;
                 heightSet = YES;
             } else {
                 NSLog(@"Breaking BPLayoutConstraintBottomToBottomLayout");
             }
-        } else if (!yOriginSet){
+        } else if (!yOriginSet) {
             NSLog(@"Breaking BPLayoutConstraintBottomToBottomLayout");
         } else {
             NSLog(@"Breaking BPLayoutConstraintBottomToBottomLayout");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToTopLayout)]){
-        if (!heightSet && yOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintBottomToTopLayout)]) {
+        if (!heightSet && yOriginSet) {
             CGFloat height = objectFrame.origin.y - frame.origin.y - [[allConstraints objectForKey:@(BPLayoutConstraintBottomToTopLayout)] floatValue];
-            if (height > 0.0){
+            if (height > 0.0) {
                 frame.size.height = height;
                 heightSet = YES;
             }
-        } else if (!yOriginSet){
+        } else if (!yOriginSet) {
             NSLog(@"Breaking BPLayoutConstraintBottomToTopLayout");
         } else {
             NSLog(@"Breaking BPLayoutConstraintBottomToTopLayout");
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToLeading)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToLeading)]) {
         frame.origin.x = objectFrame.origin.x + [[allConstraints objectForKey:@(BPLayoutConstraintLeftToLeading)] floatValue];
         xOriginSet = YES;
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToTrailing)]){
-        if (!xOriginSet){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintLeftToTrailing)]) {
+        if (!xOriginSet) {
             frame.origin.x = objectFrame.origin.x + objectFrame.size.width + [[allConstraints objectForKey:@(BPLayoutConstraintLeftToTrailing)] floatValue];
             xOriginSet = YES;
         }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToTrailing)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToTrailing)]) {
         NSLog(@"BPAnimatedObject Please use relationships in a left right fasion");
-//        if (!widthSet && xOriginSet){
+//        if (!widthSet && xOriginSet) {
 //            CGFloat width = (superviewFrame.size.width - frame.origin.x - [[allConstraints objectForKey:@(BPLayoutConstraintRightToTrailing)] floatValue]);
-//            if (width > 0.0){
+//            if (width > 0.0) {
 //                frame.size.width = width;
 //                widthSet = YES;
-//            } else if (superviewFrame.size.width > 0){
+//            } else if (superviewFrame.size.width > 0) {
 //                NSLog(@"Breaking BPLayoutConstraintRightToTrailing");
 //            }
-//        } else if (!xOriginSet){
+//        } else if (!xOriginSet) {
 //            frame.origin.x = (superviewFrame.size.width - frame.size.width - [[allConstraints objectForKey:@(BPLayoutConstraintRightToTrailing)] floatValue]);
 //            xOriginSet = YES;
-//        } else if (superviewFrame.size.width > 0){
+//        } else if (superviewFrame.size.width > 0) {
 //            NSLog(@"Breaking BPLayoutConstraintRightToTrailing");
 //        }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToLeading)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintRightToLeading)]) {
         NSLog(@"BPAnimatedObject Please use relationships in a left right fasion");
-//        if (!widthSet && xOriginSet){
+//        if (!widthSet && xOriginSet) {
 //            CGFloat width = ((-[[allConstraints objectForKey:@(BPLayoutConstraintRightToLeading)] floatValue]) - frame.origin.x);
-//            if (width > 0.0){
+//            if (width > 0.0) {
 //                frame.size.width = width;
 //                widthSet = YES;
 //            } else {
 //                NSLog(@"Breaking BPLayoutConstraintRightToLeading");
 //            }
-//        } else if (!xOriginSet){
+//        } else if (!xOriginSet) {
 //            frame.origin.x = (-([[allConstraints objectForKey:@(BPLayoutConstraintRightToLeading)] floatValue] + frame.size.width));
 //            xOriginSet = YES;
 //        } else {
 //            NSLog(@"Breaking BPLayoutConstraintRightToLeading");
 //        }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterVertical)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterVertical)]) {
         NSLog(@"BPAnimatedObject Not Implemented");
-//        if (!yOriginSet){
+//        if (!yOriginSet) {
 //            frame.origin.y = (superviewFrame.size.height / 2) - (frame.size.height / 2) + [[allConstraints objectForKey:@(BPLayoutConstraintCenterVertical)] floatValue];
 //            yOriginSet = YES;
-//        } else if (superviewFrame.size.height > 0){
+//        } else if (superviewFrame.size.height > 0) {
 //            NSLog(@"Breaking BPLayoutConstraintCenterVertical");
 //        }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterHorizontal)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintCenterHorizontal)]) {
         NSLog(@"BPAnimatedObject Not Implemented");
-//        if (!xOriginSet){
+//        if (!xOriginSet) {
 //            frame.origin.x = (superviewFrame.size.width / 2) - (frame.size.width / 2) + [[allConstraints objectForKey:@(BPLayoutConstraintCenterHorizontal)] floatValue];
 //            xOriginSet = YES;
-//        } else if (superviewFrame.size.width > 0){
+//        } else if (superviewFrame.size.width > 0) {
 //            NSLog(@"Breaking BPLayoutConstraintCenterHorizontal");
 //        }
     }
-    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintKeepRatio)]){
+    if ([[allConstraints allKeys] containsObject:@(BPLayoutConstraintKeepRatio)]) {
         NSLog(@"BPAnimatedObject Not Implemented");
-//        if (!heightSet || !widthSet){
-//            if (heightSet){
+//        if (!heightSet || !widthSet) {
+//            if (heightSet) {
 //                CGFloat newWidth = (fallbackFrame.size.width * frame.size.height) / fallbackFrame.size.height;
 //                if (newWidth > 0)
 //                    frame.size.width = newWidth;

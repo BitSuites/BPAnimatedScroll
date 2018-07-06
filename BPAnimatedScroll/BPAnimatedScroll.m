@@ -8,7 +8,6 @@
 
 #import "BPAnimatedScroll.h"
 #import "BPAnimatedPage.h"
-#import "Platform.h"
 
 @interface BPAnimatedScroll ()<UIScrollViewDelegate>{
     UIScrollView *animatedScrollView;
@@ -19,7 +18,7 @@
 @implementation BPAnimatedScroll
 @synthesize pages, numPages, currentPage, delegate;
 
-- (instancetype)init{
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self setup];
@@ -27,7 +26,7 @@
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)coder{
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) {
         [self setup];
@@ -35,7 +34,7 @@
     return self;
 }
 
-- (instancetype)initWithFrame:(CGRect)frame{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self setup];
@@ -43,11 +42,11 @@
     return self;
 }
 
-- (void)dealloc{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
-- (void)setup{
+- (void)setup {
     currentPage = 0;
     animatedScrollView = [[UIScrollView alloc] initWithFrame:self.frame];
     [animatedScrollView setDelegate:self];
@@ -59,40 +58,40 @@
     [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(orientationChanged)  name:UIDeviceOrientationDidChangeNotification  object:nil];
 }
 
-- (void)updateConstraints{
+- (void)updateConstraints {
     [super updateConstraints];
-    if ([[self subviews] containsObject:animatedScrollView]){
+    if ([[self subviews] containsObject:animatedScrollView]) {
         [animatedScrollView setTranslatesAutoresizingMaskIntoConstraints:NO];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[animatedScrollView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(animatedScrollView)]];
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[animatedScrollView]-0-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(animatedScrollView)]];
-        [NSObject performOnMainThreadWithBlock:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             [self updatePages];
-        }];
+        });
     }
 }
 
-- (void)orientationChanged{
+- (void)orientationChanged {
     // Give fraction of sec for value to change
     [self performSelector:@selector(updatePages) withObject:nil afterDelay:0.1];
 }
 
-- (void)setPages:(NSMutableArray *)newPages{
+- (void)setPages:(NSMutableArray *)newPages {
     pages = newPages;
     [self updatePages];
 }
 
-- (void)addPage:(BPAnimatedPage *)page{
+- (void)addPage:(BPAnimatedPage *)page {
     [self addPage:page atIndex:[pages count]];
 }
 
-- (void)addPage:(BPAnimatedPage *)page atIndex:(NSUInteger)index{
+- (void)addPage:(BPAnimatedPage *)page atIndex:(NSUInteger)index {
     if (!pages)
         pages = [[NSMutableArray alloc] init];
     [pages insertObject:page atIndex:index];
     [self updatePages];
 }
 
-- (void)removePage:(BPAnimatedPage *)page{
+- (void)removePage:(BPAnimatedPage *)page {
     if (!pages || !page)
         return;
     [page removeFromSuperview];
@@ -100,14 +99,16 @@
     [self updatePages];
 }
 
-- (void)removePageAtIndex:(NSUInteger)index{
-    [self removePage:[pages objectAtIndexOrNil:index]];
+- (void)removePageAtIndex:(NSUInteger)index {
+    if (index < [pages count]) {
+        [self removePage:[pages objectAtIndex:index]];
+    }
 }
 
-- (void)updatePages{
+- (void)updatePages {
     numPages = [pages count];
-    [animatedScrollView setContentSize:CGSizeMake(self.width * [pages count], self.height)];
-    for (BPAnimatedPage *nextPage in pages){
+    [animatedScrollView setContentSize:CGSizeMake(self.frame.size.width * [pages count], self.frame.size.height)];
+    for (BPAnimatedPage *nextPage in pages) {
         [nextPage addToSuperview:self];
     }
     [self sendSubviewToBack:animatedScrollView];
@@ -116,43 +117,46 @@
     [self sendUpdatedPages];
 }
 
-- (void)scrollToPage:(NSInteger)page animated:(BOOL)animated{
+- (void)scrollToPage:(NSInteger)page animated:(BOOL)animated {
     currentPage = page;
-    [animatedScrollView scrollRectToVisible:CGRectMake(self.width * page, 0, self.width, self.height) animated:animated];
-    for (BPAnimatedPage *nextPage in pages){
+    [animatedScrollView scrollRectToVisible:CGRectMake(self.frame.size.width * page, 0, self.frame.size.width, self.frame.size.height) animated:animated];
+    for (BPAnimatedPage *nextPage in pages) {
         [nextPage animateToPercent:0.0 leftSide:YES];
     }
     [self scrollViewDidScroll:animatedScrollView];
 }
 
-- (void)sendUpdatedPages{
-    if (delegate){
+- (void)sendUpdatedPages {
+    if (delegate) {
         [delegate bpAnimatedScroll:self selectedNewPage:currentPage numberOfPages:numPages];
     }
 }
 
 #pragma mark - UIScrollViewDelegate
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    NSInteger leftmostPage = floor(scrollView.contentOffset.x / scrollView.width);
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    NSInteger leftmostPage = floor(scrollView.contentOffset.x / scrollView.frame.size.width);
     NSInteger rightSidePage = leftmostPage + 1;
     NSInteger previousPage = leftmostPage - 1;
-    float percentRightShowing = (scrollView.contentOffset.x / scrollView.width) - leftmostPage;
+    float percentRightShowing = (scrollView.contentOffset.x / scrollView.frame.size.width) - leftmostPage;
     float percentLeftShowing = 1.0 - percentRightShowing;
     [self animatePage:leftmostPage toPercent:percentLeftShowing leftSide:YES];
     [self animatePage:rightSidePage toPercent:percentRightShowing leftSide:NO];
     // This makes sure the page isn't showing anything on the screen
     [self animatePage:previousPage toPercent:0.0 leftSide:YES];
     
-    NSInteger checkPage = roundf(scrollView.contentOffset.x / scrollView.width);
-    if (checkPage != currentPage){
+    NSInteger checkPage = roundf(scrollView.contentOffset.x / scrollView.frame.size.width);
+    if (checkPage != currentPage) {
         currentPage = checkPage;
         [self sendUpdatedPages];
     }
 }
 
-- (void)animatePage:(NSInteger)page toPercent:(CGFloat)percent leftSide:(BOOL)leftSide{
-    BPAnimatedPage *pageToAnimate = [pages objectAtIndexOrNil:page];
+- (void)animatePage:(NSInteger)page toPercent:(CGFloat)percent leftSide:(BOOL)leftSide {
+    BPAnimatedPage *pageToAnimate = nil;
+    if (page < [pages count]) {
+        pageToAnimate = [pages objectAtIndex:page];
+    }
     if (!pageToAnimate)
         return;
     [pageToAnimate animateToPercent:percent leftSide:leftSide];
