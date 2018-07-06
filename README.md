@@ -24,5 +24,5 @@ Installation is handled using Cocoapods. While the executables are added through
 
 ## License
 
-[BPHidingNavBar](https://github.com/BitSuites/BPHidingNavBar) was created by [BitSuites](https://github.com/BitSuites) and released under a [MIT License](License).
+[BPAnimatedScroll](https://github.com/BitSuites/BPAnimatedScroll) was created by [BitSuites](https://github.com/BitSuites) and released under a [MIT License](License).
 
